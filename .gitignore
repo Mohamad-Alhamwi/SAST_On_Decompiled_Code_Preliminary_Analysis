@@ -1,2 +1,4 @@
 workspace/
 *.gch
+build/
+cli/

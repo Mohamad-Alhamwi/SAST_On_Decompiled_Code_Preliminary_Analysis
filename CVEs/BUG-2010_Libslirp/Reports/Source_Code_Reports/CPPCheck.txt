@@ -1,5 +1,0 @@
-Libslirp/ip_input.c:523:29: error: syntax error [syntaxError]
-            / *0 origin * / if (off > optlen - sizeof(struct in_addr))
-                            ^
-nofile:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 configurations. Use --force to check all configurations. For more details, use --enable=information. [toomanyconfigs]
-

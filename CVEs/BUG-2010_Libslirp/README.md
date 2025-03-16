@@ -80,7 +80,7 @@ Eventually, we have the vulnerable version of **Libslirp** before the fix for **
 
 ## Building
 
-The project files installed using the above steps did not include any build configuration files. So, we used the ones from the [original research repo] (https://github.com/elManto/SAST_on_Decompilers/tree/main/CVE/BUG-2010-libslirp/project_code/libslirp).
+The project files installed using the above steps did not include any build configuration files. So, we used the ones from the [original research repo](https://github.com/elManto/SAST_on_Decompilers/tree/main/CVE/BUG-2010-libslirp/project_code/libslirp).
 
 ```C
 make clean

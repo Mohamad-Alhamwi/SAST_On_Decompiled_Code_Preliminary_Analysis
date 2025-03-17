@@ -26,6 +26,12 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 infer run --compilation-database compile_commands.json --keep-going
 ```
 
+For projects that do not contain the `CMakeLists.txt` file, we used `bear` along with `make` to generate the file `compile_commands.json`:
+```C
+bear make -j$(nproc)
+infer run --compilation-database compile_commands.json --keep-going
+```
+
 **Explanation:**
 - The `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag tells **CMake** to generate a `compile_commands.json` file in the build directory.
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.

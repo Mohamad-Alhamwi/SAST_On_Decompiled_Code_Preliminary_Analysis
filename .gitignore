@@ -3,3 +3,5 @@ workspace/
 build/
 cli/
 infer-out/
+*.cmake
+*.map

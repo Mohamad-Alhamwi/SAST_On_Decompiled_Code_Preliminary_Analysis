@@ -3,6 +3,7 @@
 ## Infer
 
 **Problem**
+
 Running
 ```C
 cmake ..
@@ -17,6 +18,7 @@ sometimes fails, displaying the following message without generating any reports
 > No issues found
 
 **Solution**
+
 Instead, we used the following approach:
 
 ```C

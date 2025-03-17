@@ -29,7 +29,7 @@ infer run --compilation-database compile_commands.json --keep-going
 **Explanation:**
 - The `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag tells **CMake** to generate a `compile_commands.json` file in the build directory.
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.
-- Infer reads from `compile_commands.json` instead of intercepting the build process directly. Which is the robust making it more reliable in cases where direct compilation interception fails.
+- Infer reads from `compile_commands.json` instead of intercepting the build process directly, making it more robust and reliable in cases where direct compilation interception fails.
 - The `--keep-going` flag ensures that Infer continues running even if it encounters minor failures during analysis.
 
 

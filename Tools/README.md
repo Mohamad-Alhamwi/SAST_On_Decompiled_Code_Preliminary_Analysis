@@ -2,7 +2,7 @@
 
 ## Infer
 
-**Problem**
+**Problem:**
 
 Running
 ```C
@@ -17,7 +17,7 @@ sometimes fails, displaying the following message without generating any reports
 >
 > No issues found
 
-**Solution**
+**Solution:**
 
 Instead, we used the following approach:
 
@@ -26,7 +26,7 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 infer run --compilation-database compile_commands.json --keep-going
 ```
 
-**Explanation**
+**Explanation:**
 - The `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag tells **CMake** to generate a `compile_commands.json` file in the build directory.
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.
 - Infer reads from `compile_commands.json` instead of intercepting the build process directly. Which is the robust making it more reliable in cases where direct compilation interception fails.

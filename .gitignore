@@ -5,3 +5,4 @@ cli/
 infer-out/
 *.cmake
 *.map
+compile_commands.json

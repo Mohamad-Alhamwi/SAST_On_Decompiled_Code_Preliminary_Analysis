@@ -1,0 +1,326 @@
+src/bootp.c:65:18: style: The scope of the variable 'bc' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    BOOTPClient *bc;
+                 ^
+src/bootp.c:99:14: style: The scope of the variable 'tag' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int len, tag;
+             ^
+src/cksum.c:153:5: style: Variable 'l_util.l' is reassigned a value before the old one has been used. [redundantAssignment]
+    REDUCE;
+    ^
+src/cksum.c:123:5: note: l_util.l is assigned
+    REDUCE;
+    ^
+src/cksum.c:153:5: note: l_util.l is overwritten
+    REDUCE;
+    ^
+src/cksum.c:153:5: style: Variable 'l_util.l' is reassigned a value before the old one has been used. [redundantAssignment]
+    REDUCE;
+    ^
+src/cksum.c:129:9: note: l_util.l is assigned
+        REDUCE;
+        ^
+src/cksum.c:153:5: note: l_util.l is overwritten
+    REDUCE;
+    ^
+src/cksum.c:132:25: style: Variable 's_util.c[1]' is assigned a value that is never used. [unreadVariable]
+            s_util.c[1] = *(uint8_t *)w;
+                        ^
+src/cksum.c:150:21: style: Variable 's_util.c[1]' is assigned a value that is never used. [unreadVariable]
+        s_util.c[1] = 0;
+                    ^
+src/ip_icmp.c:335:14: style: Variable 'm->m_len' is reassigned a value before the old one has been used. [redundantAssignment]
+    m->m_len = ICMP_MINLEN + s_ip_len; /* 8 bytes ICMP header */
+             ^
+src/ip_icmp.c:326:14: note: m->m_len is assigned
+    m->m_len -= hlen;
+             ^
+src/ip_icmp.c:335:14: note: m->m_len is overwritten
+    m->m_len = ICMP_MINLEN + s_ip_len; /* 8 bytes ICMP header */
+             ^
+src/ip_icmp.c:439:13: style: The scope of the variable 'error_code' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    uint8_t error_code;
+            ^
+src/ip_input.c:330:49: style: Suspicious calculation. Please use parentheses to clarify the code. The code ''a&b?c:d'' should be written as either ''(a&b)?c:d'' or ''a&(b?c:d)''. [clarifyCalculation]
+    int delta = (char *)q - (m->m_flags & M_EXT ? m->m_ext : m->m_dat);
+                                                ^
+src/ip_input.c:155:18: portability: '__mptr' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+            fp = container_of(l, struct ipq, ip_link);
+                 ^
+src/ip_input.c:432:26: portability: '__mptr' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        struct ipq *fp = container_of(l, struct ipq, ip_link);
+                         ^
+src/ncsi.c:188:42: portability: '(void*)rnh' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+    pchecksum = (uint32_t *)((void *)rnh + ncsi_rsp_len);
+                                         ^
+src/sbuf.c:109:17: style: The scope of the variable 'nn' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int len, n, nn;
+                ^
+src/slirp.c:157:22: warning: The obsolete function 'alloca' is called. In C99 and later it is recommended to use a variable length array or a dynamically allocated array instead. The function 'alloca' is dangerous for many reasons (http://stackoverflow.com/questions/1018853/why-is-alloca-not-considered-good-practice and http://linux.die.net/man/3/alloca). [allocaCalled]
+    void *tmp_addr = alloca(addrlen);
+                     ^
+src/socket.c:105:12: style: The scope of the variable 'lss' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int n, lss, total;
+           ^
+src/socket.c:105:17: style: The scope of the variable 'total' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int n, lss, total;
+                ^
+src/tcp_input.c:635:21: style: The scope of the variable 'code' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+            uint8_t code;
+                    ^
+src/tcp_input.c:1375:9: style: The scope of the variable 'opt' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int opt, optlen;
+        ^
+src/tcp_input.c:1415:20: style: The scope of the variable 'delta' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    register short delta;
+                   ^
+src/tcp_subr.c:322:27: style: The scope of the variable 'm' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    register struct mbuf *m;
+                          ^
+src/tcp_timer.c:44:28: style: The scope of the variable 'tp' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    register struct tcpcb *tp;
+                           ^
+src/util.c:353:9: style: The scope of the variable 'c' can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for 'i' can be reduced:
+void f(int x)
+{
+    int i = 0;
+    if (x) {
+        // it's safe to move 'int i = 0;' here
+        for (int n = 0; n < 10; ++n) {
+            // it is possible but not safe to move 'int i = 0;' here
+            do_something(&i);
+        }
+    }
+}
+When you see this message it is always safe to reduce the variable scope 1 level. [variableScope]
+    int c;
+        ^
+src/util.c:80:0: information: Skipping configuration 'SOCK_CLOEXEC' since the value of 'SOCK_CLOEXEC' is unknown. Use -D if you want to check it. You can use -U to skip it explicitly. [ConfigurationNotChecked]
+    ret = socket(domain, type | SOCK_CLOEXEC, protocol);
+^
+src/vmstate.c:391:13: style: Local variable 'ret' shadows outer variable [shadowVariable]
+        int ret = vmsd->pre_load(opaque);
+            ^
+src/vmstate.c:382:9: note: Shadowed declaration
+    int ret = 0;
+        ^
+src/vmstate.c:391:13: note: Shadow variable
+        int ret = vmsd->pre_load(opaque);
+            ^
+src/vmstate.c:267:39: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        n_elems = *(int32_t *)(opaque + field->num_offset);
+                                      ^
+src/vmstate.c:269:40: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        n_elems = *(uint32_t *)(opaque + field->num_offset);
+                                       ^
+src/vmstate.c:271:40: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        n_elems = *(uint16_t *)(opaque + field->num_offset);
+                                       ^
+src/vmstate.c:273:39: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        n_elems = *(uint8_t *)(opaque + field->num_offset);
+                                      ^
+src/vmstate.c:288:36: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+        size = *(int32_t *)(opaque + field->size_offset);
+                                   ^
+src/vmstate.c:314:39: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+            void *first_elem = opaque + field->offset;
+                                      ^
+src/vmstate.c:323:46: portability: 'first_elem' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+                void *curr_elem = first_elem + size * i;
+                                             ^
+src/vmstate.c:399:39: portability: 'opaque' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+            void *first_elem = opaque + field->offset;
+                                      ^
+src/vmstate.c:409:46: portability: 'first_elem' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. [arithOperationsOnVoidPointer]
+                void *curr_elem = first_elem + size * i;
+                                             ^
+src/vmstate.c:300:13: style: Variable 'ret' is assigned a value that is never used. [unreadVariable]
+    int ret = 0;
+            ^
+src/slirp.c:1064:0: style: The function 'slirp_add_exec' is never used. [unusedFunction]
+
+^
+src/slirp.c:1091:0: style: The function 'slirp_add_guestfwd' is never used. [unusedFunction]
+
+^
+src/slirp.c:1019:0: style: The function 'slirp_add_hostfwd' is never used. [unusedFunction]
+
+^
+src/slirp.c:1075:0: style: The function 'slirp_add_unix' is never used. [unusedFunction]
+
+^
+src/slirp.c:386:0: style: The function 'slirp_cleanup' is never used. [unusedFunction]
+
+^
+src/misc.c:279:0: style: The function 'slirp_connection_info' is never used. [unusedFunction]
+
+^
+src/slirp.c:351:0: style: The function 'slirp_init' is never used. [unusedFunction]
+
+^
+src/slirp.c:818:0: style: The function 'slirp_input' is never used. [unusedFunction]
+
+^
+src/slirp.c:438:0: style: The function 'slirp_pollfds_fill' is never used. [unusedFunction]
+
+^
+src/slirp.c:582:0: style: The function 'slirp_pollfds_poll' is never used. [unusedFunction]
+
+^
+src/slirp.c:1103:0: style: The function 'slirp_remove_guestfwd' is never used. [unusedFunction]
+
+^
+src/slirp.c:994:0: style: The function 'slirp_remove_hostfwd' is never used. [unusedFunction]
+
+^
+src/slirp.c:1148:0: style: The function 'slirp_socket_can_recv' is never used. [unusedFunction]
+
+^
+src/slirp.c:1167:0: style: The function 'slirp_socket_recv' is never used. [unusedFunction]
+
+^
+src/state.c:336:0: style: The function 'slirp_state_load' is never used. [unusedFunction]
+
+^
+src/state.c:310:0: style: The function 'slirp_state_save' is never used. [unusedFunction]
+
+^
+src/state.c:376:0: style: The function 'slirp_state_version' is never used. [unusedFunction]
+
+^
+src/version.c:5:0: style: The function 'slirp_version_string' is never used. [unusedFunction]
+
+^
+nofile:0:0: information: Cppcheck cannot find all the include files. Cppcheck can check the code without the include files found. But the results will probably be more accurate if all the include files are found. Please check your project's include directories and add all of them as include directories for Cppcheck. To see what files Cppcheck cannot find use --check-config. [missingIncludeSystem]
+

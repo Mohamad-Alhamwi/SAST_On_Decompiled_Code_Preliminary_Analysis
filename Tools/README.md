@@ -42,12 +42,14 @@ infer run --compilation-database compile_commands.json --keep-going
 Cppcheck can analyze projects either manually by specifying files/paths to check and settings, or by using a build environment such as CMake. According to its official documentation, it is recommended to use both approaches for better results. So we used both methods to analyze the projects.
 
 **Mannual Approach:**
+
 We ran
 ```C
 cppcheck --verbose --enable=all . --output-file=cppcheck_report_manual.txt
 ```
 
 **Build Environment Approach:**
+
 We ran
 ```C
 mkdir build && cd build

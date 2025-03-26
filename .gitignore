@@ -1,5 +1,4 @@
 workspace/
-*.gch
 build/
 cli/
 infer-out/

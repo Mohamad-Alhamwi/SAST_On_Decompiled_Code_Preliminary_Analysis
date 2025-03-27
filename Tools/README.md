@@ -3,8 +3,8 @@
 ## Tools List
 
 - Clang (10.0.0-4ubuntu1).
+- Cppcheck (1.90).
 - Infer ().
-- Cppcheck ().
 
 ## Tools Workflow
 
@@ -25,6 +25,31 @@ The analysis was performed with these Clang checkers enabled:
 -enable-checker security.insecureAPI.strcpy
 -enable-checker security.insecureAPI.DeprecatedOrUnsafeBufferHandling
 ```
+
+### Cppcheck Workflow
+Cppcheck can analyze projects either manually by specifying files/paths to check and settings, or by using a build environment such as CMake. According to its official documentation, it is recommended to use both approaches for better results. So we used both methods to analyze the projects.
+
+**Mannual Approach:**
+
+We ran
+```C
+cppcheck --verbose --enable=all . --output-file=cppcheck_report_manual.txt
+```
+
+**Build Environment Approach:**
+
+We ran
+```C
+mkdir build && cd build
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+cppcheck --verbose --enable=all --project=compile_commands.json --output-file=cppcheck_report_build.txt
+```
+
+**Explanation:**
+- The `--output-file=<file>` option writes results to file, rather than standard error.
+- The `--verbose` option outputs more detailed error information.
+- The `--enable=all` option enables all available checks
+- The `.` in the manuall approach means *analize the source files in this directory*, while `--project=compile_commands.json` in the build-based approach means *use the compile database* to conduct analysis.
 
 ### Infer Workflow
 
@@ -63,29 +88,3 @@ infer run --compilation-database compile_commands.json --keep-going
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.
 - Infer reads from `compile_commands.json` instead of intercepting the build process directly, making it more robust and reliable in cases where direct compilation interception fails.
 - The `--keep-going` flag ensures that Infer continues running even if it encounters minor failures during analysis.
-
-### Cppcheck Workflow
-Cppcheck can analyze projects either manually by specifying files/paths to check and settings, or by using a build environment such as CMake. According to its official documentation, it is recommended to use both approaches for better results. So we used both methods to analyze the projects.
-
-**Mannual Approach:**
-
-We ran
-```C
-cppcheck --verbose --enable=all . --output-file=cppcheck_report_manual.txt
-```
-
-**Build Environment Approach:**
-
-We ran
-```C
-mkdir build && cd build
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-cppcheck --verbose --enable=all --project=compile_commands.json --output-file=cppcheck_report_build.txt
-```
-
-**Explanation:**
-- The `--output-file=<file>` option writes results to file, rather than standard error.
-- The `--verbose` option outputs more detailed error information.
-- The `--enable=all` option enables all available checks
-- The `.` in the manuall approach means *analize the source files in this directory*, while `--project=compile_commands.json` in the build-based approach means *use the compile database* to conduct analysis.
-

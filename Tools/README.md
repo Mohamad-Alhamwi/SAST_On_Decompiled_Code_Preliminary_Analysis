@@ -1,12 +1,32 @@
-# Tool
+# Tools
 
 ## Tools List
 
+- Clang (10.0.0-4ubuntu1).
 - Infer ().
 - Cppcheck ().
-- Clang (10.0.0-4ubuntu1).
 
-## Infer Workflow
+## Tools Workflow
+
+### Clang Workflow
+When using the **Clang Static Analyzer**, configuration scripts and build tools (like `./configure` or `cmake`) should also be run through the analyzer. These scripts often generate **Makefiles** with hardcoded compiler paths. Running them through the **Clang Static Analyzer** ensures that the compiler path is set to **ccc-analyzer**, allowing all subsequent build steps to be properly analyzed.
+
+So we ran
+```C
+scan-build ./configure
+scan-build -v --keep-going  --force-analyze-debug-code -o . make -j$(nproc)
+```
+
+The analysis was performed with these Clang checkers enabled:
+
+```C
+-enable-checker alpha.security.taint.TaintPropagation
+-enable-checker alpha.security.ArrayBound
+-enable-checker security.insecureAPI.strcpy
+-enable-checker security.insecureAPI.DeprecatedOrUnsafeBufferHandling
+```
+
+### Infer Workflow
 
 **Problem:**
 
@@ -44,7 +64,7 @@ infer run --compilation-database compile_commands.json --keep-going
 - Infer reads from `compile_commands.json` instead of intercepting the build process directly, making it more robust and reliable in cases where direct compilation interception fails.
 - The `--keep-going` flag ensures that Infer continues running even if it encounters minor failures during analysis.
 
-## Cppcheck Workflow
+### Cppcheck Workflow
 Cppcheck can analyze projects either manually by specifying files/paths to check and settings, or by using a build environment such as CMake. According to its official documentation, it is recommended to use both approaches for better results. So we used both methods to analyze the projects.
 
 **Mannual Approach:**
@@ -68,7 +88,4 @@ cppcheck --verbose --enable=all --project=compile_commands.json --output-file=cp
 - The `--verbose` option outputs more detailed error information.
 - The `--enable=all` option enables all available checks
 - The `.` in the manuall approach means *analize the source files in this directory*, while `--project=compile_commands.json` in the build-based approach means *use the compile database* to conduct analysis.
-
-## Clang Workflow
-
 

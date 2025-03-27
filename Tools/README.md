@@ -11,7 +11,7 @@
 ### Clang Workflow
 When using the **Clang Static Analyzer**, configuration scripts and build system generator tools (like `./configure` or `cmake`) should also be run through the analyzer. These scripts often generate **Makefiles** with hardcoded compiler paths. Running them through the **Clang Static Analyzer** ensures that the compiler path is set to **ccc-analyzer**, allowing all subsequent build steps to be properly analyzed.
 
-So we ran
+We used the following commands to run the analysis:
 ```C
 scan-build ./configure
 scan-build -v --keep-going  --force-analyze-debug-code -o . make -j$(nproc)

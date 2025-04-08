@@ -7,3 +7,5 @@ infer-out/
 compile_commands.json
 *.rep
 *.gpr
+!Ghidra/libXfont_not_stripped.so.1.4.1
+!Ghidra/libXfont_stripped.so.1.4.1

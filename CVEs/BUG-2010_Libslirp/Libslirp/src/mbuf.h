@@ -34,6 +34,8 @@
 #ifndef MBUF_H
 #define MBUF_H
 
+#include "slirp.h"
+
 /*
  * Macros for type conversion
  * mtod(m,t) -	convert mbuf pointer to data pointer of correct type

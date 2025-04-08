@@ -5,3 +5,5 @@ infer-out/
 *.cmake
 *.map
 compile_commands.json
+*.rep
+*.gpr

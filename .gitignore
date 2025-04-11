@@ -2,6 +2,7 @@ build/
 Ghidra/
 libwireshark_not_stripped
 libwireshark_stripped
+codeqldb/
 aclocal.m4
 autom4te.cache/
 autoscan.log

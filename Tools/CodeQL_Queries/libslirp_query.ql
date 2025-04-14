@@ -1,6 +1,8 @@
 import cpp
 import semmle.code.cpp.controlflow.StackVariableReachability
 
+// This query is taken from the original work available at:
+// https://github.com/elManto/SAST_on_Decompilers/.
 
 predicate isFreeExpr(Expr e, StackVariable v) {
   exists(VariableAccess va | va.getTarget() = v |

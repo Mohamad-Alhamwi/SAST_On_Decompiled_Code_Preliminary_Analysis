@@ -1,6 +1,9 @@
 import cpp
 import semmle.code.cpp.dataflow.TaintTracking
 
+// This query is taken from the original work available at:
+// https://github.com/elManto/SAST_on_Decompilers/.
+
 class Config extends DataFlow::Configuration {
     Config() { this = "DoubleFreeFlows" }
   

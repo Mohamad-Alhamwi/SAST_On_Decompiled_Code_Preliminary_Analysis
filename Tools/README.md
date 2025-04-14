@@ -4,7 +4,7 @@
 
 - Clang (10.0.0-4ubuntu1).
 - Cppcheck (1.90).
-- Infer ().
+- Infer (1.2.0).
 
 ## Tools Workflow
 
@@ -53,14 +53,13 @@ cppcheck --verbose --enable=all --project=compile_commands.json --output-file=cp
 
 ### Infer Workflow
 
-**Problem:**
+We used the following commands to run the analysis:
 
-Running
 ```C
 cmake ..
 infer run -- make -j$(nproc)
 ```
-sometimes fails, displaying the following message without generating any reports:
+That, however, sometimes fails, displaying the following message without generating any reports:
 
 > Nothing to compile. Try running make `clean first`.
 >
@@ -68,9 +67,7 @@ sometimes fails, displaying the following message without generating any reports
 >
 > No issues found
 
-**Solution:**
-
-Instead, we used the following approach:
+To solve that problem, we used the following approach:
 
 ```C
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1

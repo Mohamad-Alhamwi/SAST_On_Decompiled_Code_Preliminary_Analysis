@@ -1,14 +1,14 @@
 /**
- * @name stack-based buffer overflow vulnerability due to unbounded format string in sscanf call.
+ * @name Potentially unsafe use of sscanf().
+ * @description Using 'sscanf' without restricting format specifiers may lead to buffer overflows.
  * @kind problem
  * @severity warning
  * @precision high
- * @id cpp/insecure/sscanf-missing-size
+ * @id cpp/insecure/sscanf
  */
 
  import cpp
 
- // A query to detect `sscanf` calls with an unbounded `%s` format specifier.
  predicate hasUnboundedSscanfFormat(FunctionCall call) 
  {
      exists(StringLiteral fmt |

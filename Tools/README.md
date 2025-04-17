@@ -5,6 +5,7 @@
 - Clang (10.0.0-4ubuntu1).
 - Cppcheck (1.90).
 - Infer (1.2.0).
+- CodeQL (command-line toolchain release 2.21.0)
 
 ## Tools Workflow
 
@@ -45,7 +46,7 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 cppcheck --verbose --enable=all --project=compile_commands.json --output-file=cppcheck_report_build.txt
 ```
 
-**Explanation:**
+**Command Breakdown:**
 - The `--output-file=<file>` option writes results to file, rather than standard error.
 - The `--verbose` option outputs more detailed error information.
 - The `--enable=all` option enables all available checks
@@ -80,8 +81,34 @@ bear make -j$(nproc)
 infer run --compilation-database compile_commands.json --keep-going
 ```
 
-**Explanation:**
+**Command Breakdown:**
 - The `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag tells **CMake** to generate a `compile_commands.json` file in the build directory.
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.
 - Infer reads from `compile_commands.json` instead of intercepting the build process directly, making it more robust and reliable in cases where direct compilation interception fails.
 - The `--keep-going` flag ensures that Infer continues running even if it encounters minor failures during analysis.
+
+### CodeQL Workflow
+
+**Step 1: Create the CodeQL Database**
+Before analyzing code with CodeQL, we need to generate a database that contains all necessary information. We used the following command:
+
+```C
+codeql database create codeqldb --command=make --language=c-cpp
+```
+
+**Step 2: Analyze the Code**
+Run the analysis using:
+
+```C
+codeql database analyze codeqldb --verbose --format=csv --output=./codeql_report.csv
+```
+
+This runs the default queries. In our case, it detected only the **BUG-2010_Libslirp** issue. To improve coverage, we used the queries from the original research along with additional ones we wrote ourselves.
+
+**Command Breakdown:**
+- `<database>`: Directory name for the CodeQL database.
+- `--language`: Language identifier (e.g., c-cpp).
+- `--command` : Build command or script (e.g., make).
+- `--format` : Output format (e.g., csv).
+- `--output` : Path to save the analysis report.
+- `--verbose` : Enables detailed diagnostic output.

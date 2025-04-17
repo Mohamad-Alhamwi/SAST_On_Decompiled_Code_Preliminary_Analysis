@@ -90,15 +90,15 @@ infer run --compilation-database compile_commands.json --keep-going
 ### CodeQL Workflow
 
 **Step 1: Create the CodeQL Database**
-Before analyzing code with CodeQL, we need to generate a database that contains all necessary information. We used the following command:
 
+Before analyzing code with CodeQL, we need to generate a database that contains all necessary information. We used the following command:
 ```C
 codeql database create codeqldb --command=make --language=c-cpp
 ```
 
 **Step 2: Analyze the Code**
-Run the analysis using:
 
+We run the analysis using:
 ```C
 codeql database analyze codeqldb --verbose --format=csv --output=./codeql_report.csv
 ```

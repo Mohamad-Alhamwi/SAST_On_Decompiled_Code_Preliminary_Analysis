@@ -1,8 +1,9 @@
 import cpp
-import semmle.code.cpp.security.TaintTracking
+import semmle.code.cpp.security.new.TaintTracking
 
 // This query is taken from the original work available at:
 // https://github.com/elManto/SAST_on_Decompilers/.
+// We just updated it slightly to use the new Dataflow API.
 
 predicate sourceSized(FunctionCall fc, Expr src) {
   fc.getTarget().hasGlobalOrStdName("memcpy") and

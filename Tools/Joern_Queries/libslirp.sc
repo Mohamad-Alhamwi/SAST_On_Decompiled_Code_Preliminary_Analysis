@@ -1,7 +1,21 @@
-// Select all function calls in the codebase ==> filter to only those calls named "g_free" ==> grabs all arguments passed to "g_free" calls.
-val freedVars = cpg.call.name("g_free").argument.filter(_.lineNumber == Some(113))
-freedVars.foreach(x => println(s"${x.file.name}:${x.lineNumber} => ${x.code}"))
+var counter = 1
 
-// Select all function calls in the codebase ==> filter down to only operations.
-val derefs = cpg.call.name("<operator>.indirectFieldAccess").filter(_.lineNumber == Some(114))
-derefs.foreach(x => println(s"${x.file.name}:${x.lineNumber} => ${x.code}"))
+val freedVars = cpg.call.name("g_free").argument.isIdentifier
+
+freedVars.foreach { freed =>
+    val varName = freed.name
+    val freeLine = freed.lineNumber.getOrElse(-1)
+    val fileName = freed.file.name.headOption.getOrElse("")
+
+    val badDerefs = cpg.call.name("<operator>.indirectFieldAccess")
+        .argument.isIdentifier.name(varName)
+        .filter(d => d.lineNumber.exists(_ > freeLine) && d.file.name.headOption.contains(fileName))
+
+    badDerefs.foreach { d =>
+        println(s"$counter: UAF candidate on `${varName}` at ${d.file.name}:${d.lineNumber} => ${d.code}")
+        counter += 1
+    }
+}
+
+println(s"\nTotal potential bugs: `${counter - 1}`")
+    

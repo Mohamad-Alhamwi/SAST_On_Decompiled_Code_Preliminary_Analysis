@@ -1,21 +1,27 @@
 var counter = 1
 
-val freedVars = cpg.call.name("g_free").argument.isIdentifier
+val freedVars = cpg.method
+                .name("(.*_)?free")
+                .filter(_.parameter.size == 1)
+                .callIn
+                .where(_.argument(1).isIdentifier)
 
-freedVars.foreach { freed =>
-    val varName = freed.name
-    val freeLine = freed.lineNumber.getOrElse(-1)
-    val fileName = freed.file.name.headOption.getOrElse("")
+val badDerefs = freedVars.flatMap(f => {
+                    val freedIdentifierCode = f.argument(1).code
+                    val postDom             = f.postDominatedBy.toSetImmutable
 
-    val badDerefs = cpg.call.name("<operator>.indirectFieldAccess")
-        .argument.isIdentifier.name(varName)
-        .filter(d => d.lineNumber.exists(_ > freeLine) && d.file.name.headOption.contains(fileName))
+                    val assignedPostDom = postDom.isIdentifier
+                    .where(_.inAssignment)
+                    .codeExact(freedIdentifierCode)
+                    .flatMap(id => id ++ id.postDominatedBy)
 
-    badDerefs.foreach { d =>
-        println(s"$counter: UAF candidate on `${varName}` at ${d.file.name}:${d.lineNumber} => ${d.code}")
-        counter += 1
-    }
+                    postDom
+                    .removedAll(assignedPostDom)
+})
+
+badDerefs.foreach { d =>
+    println(s"$counter: UAF candidate at ${d.file.name}:${d.lineNumber} => ${d.code}")
+    counter += 1
 }
 
 println(s"\nTotal potential bugs: `${counter - 1}`")
-    

@@ -17,6 +17,8 @@ val badDerefs = freedVars.flatMap(f => {
 
                     postDom
                     .removedAll(assignedPostDom)
+                    .isIdentifier
+                    .codeExact(freedIdentifierCode)
 })
 
 badDerefs.foreach { d =>

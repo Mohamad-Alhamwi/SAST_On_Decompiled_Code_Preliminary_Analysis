@@ -1,3 +1,5 @@
+// The original query is taken from https://queries.joern.io/. We just took it and tweaked it a bit.
+
 var counter = 1
 
 val freedVars = cpg.method

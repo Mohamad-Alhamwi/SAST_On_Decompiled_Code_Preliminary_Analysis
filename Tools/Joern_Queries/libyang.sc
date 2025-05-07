@@ -3,24 +3,36 @@ var counter = 1
 val strcpy_calls = cpg.method
                 .name("strcpy")
                 .callIn
-                .filter(_.parameter.size == 2)
 
-val unsafe_strcpy_calls = strcpy_calls.flatMap(c => {
-    val dist_arg = c.argument(0).code
-    val src_arg = c.argument(1).code
+val strcpy_calls_info = strcpy_calls.flatMap{ call =>
+    val dst = call.argument(1).code
+    val src = call.argument(2).code
+    val call_line = call.lineNumber
+    val call_code = call.code
+    val pre_doms = call.dominatedBy.toList
 
-    val pre_dom = c.dominates.toSetImmutable
+    pre_doms.map{ dom =>
+        val dom_code = dom.code
+        val dom_type = dom.getClass.getSimpleName
+        (dst, src, dom_code, dom_type, call_line, call_code)
+    }
+}
 
-    pre_dom
-    .isCall
-    .name("strlen")
-    .argument(0)
-    .codeExact(src_arg)
-})
+val safe_strcpy_calls = strcpy_calls_info.filter{
+    case (_, src, dom_code, dom_type, _, _)  =>
+        (dom_type == "Call" || dom_type == "Method") &&
+        dom_code.contains("strlen") &&
+        dom_code.contains(s"strlen($src)")
+}
+.distinctBy{
+    case (_, src, _, _, call_line, _) => (src, call_line)
+}
 
-unsafe_strcpy_calls.foreach { d =>
-    println(s"$counter: Potentially unsafe use of strcpy(). at ${d.file.name}:${d.lineNumber} => ${d.code}")
-    counter += 1
+safe_strcpy_calls.foreach{
+    case (_, _, dom_code, dom_type, call_line, call_code) =>
+        println(s"[$counter] Potentially unsafe use of strcpy() at line $call_line as $call_code")
+        println(s"        ($dom_code, $dom_type)\n")
+        counter += 1
 }
 
 println(s"\nTotal potential bugs: `${counter - 1}`")

@@ -29,9 +29,8 @@ val safe_strcpy_calls = strcpy_calls_info.filter{
 }
 
 safe_strcpy_calls.foreach{
-    case (_, _, dom_code, dom_type, call_line, call_code) =>
+    case (_, _, _, _, call_line, call_code) =>
         println(s"[$counter] Potentially unsafe use of strcpy() at line $call_line as $call_code")
-        println(s"        ($dom_code, $dom_type)\n")
         counter += 1
 }
 

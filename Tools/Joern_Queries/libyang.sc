@@ -1,37 +1,26 @@
 var counter = 1
 
+// Find all calls to strcpy.
 val strcpy_calls = cpg.method
                 .name("strcpy")
                 .callIn
 
-val strcpy_calls_info = strcpy_calls.flatMap{ call =>
-    val dst = call.argument(1).code
-    val src = call.argument(2).code
-    val call_line = call.lineNumber
+// Get all strcpy calls that are not preceded by "strlen" using the same source.
+val unsafe_strcpy_calls = strcpy_calls.filterNot{ call =>
+    val src_Arg = call.argument(2)
+    val prev = call.method.ast.isCall.name("strlen")
+    .filter(strlen => strlen.argument(1).code == src_Arg.code)
+    .filter(strlen => strlen.lineNumber.getOrElse(0) < call.lineNumber.getOrElse(Int.MaxValue))
+    
+    prev.nonEmpty
+}
+
+unsafe_strcpy_calls.foreach{ call =>
+    val call_line = call.lineNumber.getOrElse(-1)
     val call_code = call.code
-    val pre_doms = call.dominatedBy.toList
+    println(s"[$counter] Potentially unsafe use of strcpy() at line $call_line: $call_code")
 
-    pre_doms.map{ dom =>
-        val dom_code = dom.code
-        val dom_type = dom.getClass.getSimpleName
-        (dst, src, dom_code, dom_type, call_line, call_code)
-    }
+    counter += 1
 }
 
-val safe_strcpy_calls = strcpy_calls_info.filter{
-    case (_, src, dom_code, dom_type, _, _)  =>
-        (dom_type == "Call" || dom_type == "Method") &&
-        dom_code.contains("strlen") &&
-        dom_code.contains(s"strlen($src)")
-}
-.distinctBy{
-    case (_, src, _, _, call_line, _) => (src, call_line)
-}
-
-safe_strcpy_calls.foreach{
-    case (_, _, _, _, call_line, call_code) =>
-        println(s"[$counter] Potentially unsafe use of strcpy() at line $call_line as $call_code")
-        counter += 1
-}
-
-println(s"\nTotal potential bugs: `${counter - 1}`")
+println(s"\nTotal potential bugs: ${counter - 1}")

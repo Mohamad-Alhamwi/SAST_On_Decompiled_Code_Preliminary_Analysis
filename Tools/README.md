@@ -75,12 +75,6 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 infer run --compilation-database compile_commands.json --keep-going
 ```
 
-For projects that do not contain the `CMakeLists.txt` file, we used `bear` along with `make` to generate the `compile_commands.json` file:
-```C
-bear make -j$(nproc)
-infer run --compilation-database compile_commands.json --keep-going
-```
-
 **Command Breakdown:**
 - The `-DCMAKE_EXPORT_COMPILE_COMMANDS=1` flag tells **CMake** to generate a `compile_commands.json` file in the build directory.
 - This file serves as a JSON compilation database, listing all the compile commands used to build the project.
@@ -112,3 +106,28 @@ This runs the default queries. In our case, it detected only the **BUG-2010_Libs
 - `--format` : Output format (e.g., csv).
 - `--output` : Path to save the analysis report.
 - `--verbose` : Enables detailed diagnostic output.
+
+## Notes
+
+For projects that do not use CMake (i.e., no CMakeLists.txt), we use Bear to extract the compilation database (compile_commands.json) by wrapping the make process.
+
+### Install Bear
+
+On Debian/Ubuntu-based systems:
+```C
+sudo apt install bear
+```
+
+### Generate the Compilation Database
+
+Once installed, we wrap our make command with bear:
+```C
+bear make -j$(nproc)
+```
+
+### Example Usage with Static Analysis
+
+We can now use tools like infer with the generated database:
+```C
+infer run --compilation-database compile_commands.json --keep-going
+```

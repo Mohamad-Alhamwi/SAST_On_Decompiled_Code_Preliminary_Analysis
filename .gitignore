@@ -1,8 +1,12 @@
 build/
 Ghidra/
+codeqldb/
+workspace/
+infer-out/
 libwireshark_not_stripped
 libwireshark_stripped
-codeqldb/
+compile_commands.json
+compile_errors.log
 aclocal.m4
 autom4te.cache/
 autoscan.log

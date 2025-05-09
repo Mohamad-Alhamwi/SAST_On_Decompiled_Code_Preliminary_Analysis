@@ -107,9 +107,9 @@ This runs the default queries. In our case, it detected only the **BUG-2010_Libs
 - `--output` : Path to save the analysis report.
 - `--verbose` : Enables detailed diagnostic output.
 
-## Notes
+## Note
 
-For projects that do not use CMake (i.e., no CMakeLists.txt), we use Bear to extract the compilation database (compile_commands.json) by wrapping the make process.
+For projects that do not use **CMake** (i.e., no CMakeLists.txt), we use **Bear** to extract the compilation database (compile_commands.json) by wrapping the make process.
 
 ### Install Bear
 

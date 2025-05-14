@@ -1,20 +1,46 @@
+/**
+ * This CodeQl query detects for loops that use <= with an incrementing index variable,
+ * a common off-by-one pattern that can lead to out-of-bounds access when iterating over arrays or containers.
+ */
+
 import cpp
-import semmle.code.cpp.dataflow.TaintTracking
 
-// This query is taken from the original work available at:
-// https://github.com/elManto/SAST_on_Decompilers/.
+predicate isIndexVar(ForStmt loop, Variable v)
+{
+  // Detect i = i + 1.
+  exists(AssignExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getLValue() = v.getAnAccess()
+  )
+  or
+  // Detect i += 1.
+  exists(AssignAddExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getLValue() = v.getAnAccess()
+  )
+  or
+  // Detect i ++.
+  exists(PostfixIncrExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getOperand() = v.getAnAccess()
+  )
+  or
+  // Detect ++ i.
+  exists(PrefixIncrExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getOperand() = v.getAnAccess()
+  )
+}
 
-from AssignExpr e, ForStmt f, ArrayExpr ae, Expr src, Variable v
-where e.getEnclosingStmt() = f.getInitialization()
-        and v.getAnAssignedValue() = e.getRValue()
+predicate isSuspiciousLoopCondition(ForStmt loop, RelationalOperation cond, Variable indexVar)
+{
+  loop.getCondition() = cond and
+  cond.getOperator() = "<="  and
+  cond.getLeftOperand() = indexVar.getAnAccess() and
+  isIndexVar(loop, indexVar)
+  //loop.getAnIterationVariable() = cond.getLeftOperand() and
+}
 
-        and TaintTracking::localTaint(
-            DataFlow::exprNode(v.getAnAssignedValue()), 
-            DataFlow::exprNode(ae.getArrayOffset()))
-
-        and not ae.getBasicBlock().inLoop()
-
-select ae, v
-
-// One possible query that looks for off-by-one array accesses outside the loops
-// that use the loop counter as an array offset
+from ForStmt loop, Variable indexVar, RelationalOperation cond
+where isSuspiciousLoopCondition(loop, cond, indexVar)
+select loop, "Suspicious loop using '<=' with index variable: " + indexVar.getName()

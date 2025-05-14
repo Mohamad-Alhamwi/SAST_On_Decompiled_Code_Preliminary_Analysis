@@ -10,13 +10,50 @@ module MyFlowConfiguration implements DataFlow::ConfigSig
 {
   predicate isSource(DataFlow::Node source)
   {
+    // Case 1: Declared in the loop, for(int i = 0;;).
     exists(ForStmt loop, Variable v |
-      // Case 1: declared in the loop.
-      // Does not detect Case 2: assigned in loop init, declared elsewhere.
-      loop.getADeclaration() = v
-      and
-      source.asExpr() = v.getAnAccess()
+      loop.getADeclaration() = v and
+      source.asExpr() = v.getAnAccess() and
+      (
+        // Case 1.1: Variable used in update clause
+        exists(Expr update |
+          loop.getUpdate() = update and
+          update.getAChild*() = v.getAnAccess()
+        )
+        or
+        // Case 1.2: Variable incremented in loop body
+        (
+          // i = i + 1
+          exists(AssignExpr assign |
+            assign.getLValue() = v.getAnAccess() and
+            assign.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          // i += 1
+          exists(AssignAddExpr assign |
+            assign.getLValue() = v.getAnAccess() and
+            assign.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          // i++
+          exists(PostfixIncrExpr inc |
+            inc.getOperand() = v.getAnAccess() and
+            inc.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          // ++i
+          exists(PrefixIncrExpr inc |
+            inc.getOperand() = v.getAnAccess() and
+            inc.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+        )
+      )
     )
+    //or
+    // Case 2: assigned in loop init, declared elsewhere, for(i = 0;;).
+    //exists(ForStmt loop, Variable v |
+    // loop.getInitialization() = v and
+    //)
   }
 
   predicate isSink(DataFlow::Node sink)

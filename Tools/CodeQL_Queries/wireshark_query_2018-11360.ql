@@ -1,11 +1,11 @@
 /**
- * This CodeQl query detects for loops that use <= with an incrementing index variable,
+ * This CodeQl query detects for loops that use <= with an incrementing index variable, and for loops that use >= with an decrementing index variable
  * a common off-by-one pattern that can lead to out-of-bounds access when iterating over arrays or containers.
  */
 
 import cpp
 
-predicate isIndexVar(ForStmt loop, Variable v)
+predicate isIndexVarInForwardLoop(ForStmt loop, Variable v)
 {
   // Detect i = i + 1.
   exists(AssignExpr assign |
@@ -32,15 +32,49 @@ predicate isIndexVar(ForStmt loop, Variable v)
   )
 }
 
-predicate isSuspiciousLoopCondition(ForStmt loop, RelationalOperation cond, Variable indexVar)
+predicate isIndexVarInBackwardLoop(ForStmt loop, Variable v)
+{
+  // Detect i = i - 1.
+  exists(AssignExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getLValue() = v.getAnAccess()
+  )
+  or
+  // Detect i -= 1.
+  exists(AssignSubExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getLValue() = v.getAnAccess()
+  )
+  or
+  // Detect i --.
+  exists(PostfixDecrExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getOperand() = v.getAnAccess()
+  )
+  or
+  // Detect -- i.
+  exists(PrefixDecrExpr assign |
+    assign.getEnclosingStmt().getParentStmt*() = loop and
+    assign.getOperand() = v.getAnAccess()
+  )
+}
+
+predicate isSuspiciousForwardLoopCondition(ForStmt loop, RelationalOperation cond, Variable indexVar)
 {
   loop.getCondition() = cond and
   cond.getOperator() = "<="  and
   cond.getLeftOperand() = indexVar.getAnAccess() and
-  isIndexVar(loop, indexVar)
-  //loop.getAnIterationVariable() = cond.getLeftOperand() and
+  isIndexVarInForwardLoop(loop, indexVar)
+}
+
+predicate isSuspiciousBackwardLoopCondition(ForStmt loop, RelationalOperation cond, Variable indexVar)
+{
+  loop.getCondition() = cond and
+  cond.getOperator() = ">="  and
+  cond.getLeftOperand() = indexVar.getAnAccess() and
+  isIndexVarInBackwardLoop(loop, indexVar)
 }
 
 from ForStmt loop, Variable indexVar, RelationalOperation cond
-where isSuspiciousLoopCondition(loop, cond, indexVar)
+where isSuspiciousForwardLoopCondition(loop, cond, indexVar) or isSuspiciousBackwardLoopCondition(loop, cond, indexVar)
 select loop, "Suspicious loop using '<=' with index variable: " + indexVar.getName()

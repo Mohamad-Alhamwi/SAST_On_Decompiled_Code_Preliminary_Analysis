@@ -1,3 +1,6 @@
+// This query finds cases where a loop index variable (initialized in a for-loop) 
+// flows into an array index used outside any loop.
+
 import cpp
 import semmle.code.cpp.dataflow.new.DataFlow
   
@@ -16,7 +19,11 @@ module MyFlowConfiguration implements DataFlow::ConfigSig
     
     predicate isSink(DataFlow::Node sink)
     {
-        exists(ArrayExpr array | sink.asExpr() = array.getArrayOffset())
+        exists(ArrayExpr array | 
+            sink.asExpr() = array.getArrayOffset()
+            and not
+            array.getBasicBlock().inLoop()
+        )
     }
 }
   

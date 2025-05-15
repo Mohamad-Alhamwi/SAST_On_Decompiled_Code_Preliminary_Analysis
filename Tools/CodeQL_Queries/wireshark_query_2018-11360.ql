@@ -1,7 +1,10 @@
 /**
- * Detects loop index variables that are incremented and later used
- * in array indexing expressions.
+ * Detects loop index variables that are:
+ * 1. Declared either inside or before the loop statement, and
+ * 2. Incremented in the loop's update clause or body,
+ * and are later used in array indexing expressions.
  */
+
 
 import cpp
 import semmle.code.cpp.dataflow.new.TaintTracking
@@ -15,13 +18,13 @@ module MyFlowConfiguration implements DataFlow::ConfigSig
       loop.getADeclaration() = v and
       source.asExpr() = v.getAnAccess() and
       (
-        // Case 1.1: Variable used in update clause
+        // Variable used in update clause.
         exists(Expr update |
           loop.getUpdate() = update and
           update.getAChild*() = v.getAnAccess()
         )
         or
-        // Case 1.2: Variable incremented in loop body
+        // Variable incremented in loop body.
         (
           // i = i + 1
           exists(AssignExpr assign |
@@ -49,11 +52,45 @@ module MyFlowConfiguration implements DataFlow::ConfigSig
         )
       )
     )
-    //or
-    // Case 2: assigned in loop init, declared elsewhere, for(i = 0;;).
-    //exists(ForStmt loop, Variable v |
-    // loop.getInitialization() = v and
-    //)
+    or
+    // Case 2: Assigned in loop init, declared elsewhere, for(i = 0;;).
+    exists(ForStmt loop, Variable v |
+      source.asExpr() = v.getAnAccess() and
+      exists(AssignExpr initAssign |
+        loop.getInitialization().getAChild*() = initAssign and
+        initAssign.getLValue() = v.getAnAccess()
+      ) and
+      (
+        // Variable used in update clause.
+        exists(Expr update |
+          loop.getUpdate() = update and
+          update.getAChild*() = v.getAnAccess()
+        )
+        or
+        // Variable incremented in loop body.
+        (
+          exists(AssignExpr assign |
+            assign.getLValue() = v.getAnAccess() and
+            assign.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          exists(AssignAddExpr assign |
+            assign.getLValue() = v.getAnAccess() and
+            assign.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          exists(PostfixIncrExpr inc |
+            inc.getOperand() = v.getAnAccess() and
+            inc.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+          or
+          exists(PrefixIncrExpr inc |
+            inc.getOperand() = v.getAnAccess() and
+            inc.getEnclosingStmt().getParentStmt*() = loop.getStmt()
+          )
+        )
+      )
+    )
   }
 
   predicate isSink(DataFlow::Node sink)

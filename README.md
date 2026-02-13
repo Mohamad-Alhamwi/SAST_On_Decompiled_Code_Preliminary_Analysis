@@ -15,4 +15,5 @@
 | CVE-2019-19334 | Libyang |
 | CVE-2019-3857 | Libssh2 |
 
-
+**Note:**
+This repository is no longer maintained.
